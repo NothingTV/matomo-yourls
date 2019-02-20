@@ -3,7 +3,7 @@
 Plugin Name: MatomoTracking
 Plugin URI: https://github.com/NothingTV/matomo-yourls
 Description: Track the redirections with matomo.
-Version: 1.0
+Version: 1.0.1
 Author: NothingTV
 Author URI: https://github.com/NothingTV
 */
@@ -18,8 +18,8 @@ function warning_redirection( $args ) {
     $url = $args[0];
     $code = $args[1];
 	
-	$matomo_url = "analytics.nothingtv.de"; // Example: analytics.example.de
-	$matomo_id = "4";
+	$matomo_url = ""; // Add your URL from matomo here. Example: analytics.example.de
+	$matomo_id = ""; // Add your Tracking ID here
 	$content = "<html><head><meta http-equiv=\"refresh\" content=\"0; URL='$url'\">
 	<!-- Matomo -->
 	<script type=\"text/javascript\">
