@@ -17,26 +17,36 @@ yourls_add_action( 'pre_redirect', 'warning_redirection' );
 function warning_redirection( $args ) {
     $url = $args[0];
     $code = $args[1];
+
+	// Add your URL from matomo here or specify docker environment variable if your 
+	// setup is using docker. Example: analytics.example.de
+	$matomo_url = getenv("MATOMO_URL") !== false ? getenv("MATOMO_URL") : "";
 	
-	$matomo_url = ""; // Add your URL from matomo here. Example: analytics.example.de
-	$matomo_id = ""; // Add your Tracking ID here
-	$content = "<html><head><meta http-equiv=\"refresh\" content=\"0; URL='$url'\">
+	// Add your Tracking ID here or specify docker environment variable if your 
+	// setup is using docker.
+	$matomo_id = getenv("MATOMO_ID") !== false ? getenv("MATOMO_ID") : "";
+
+	$content = <<<EOD
+	<html><head><meta http-equiv="refresh" content="0; URL='$url'">
 	<!-- Matomo -->
-	<script type=\"text/javascript\">
+	<script type="text/javascript">
 	  var _paq = window._paq || [];
-	  /* tracker methods like \"setCustomDimension\" should be called before \"trackPageView\" */
+	  /* tracker methods like "setCustomDimension" should be called before "trackPageView" */
 	  _paq.push(['trackPageView']);
 	  _paq.push(['enableLinkTracking']);
 	  (function() {
-		var u=\"https://" . $matomo_url . "/\";
+		var u="https://$matomo_url";
 		_paq.push(['setTrackerUrl', u+'matomo.php']);
-		_paq.push(['setSiteId', '" . $matomo_id . "']);
+		_paq.push(['setSiteId', '$matomo_id']);
 		var d=document, g=d.createElement('script'), s=d.getElementsByTagName('script')[0];
 		g.type='text/javascript'; g.async=true; g.defer=true; g.src=u+'matomo.js'; s.parentNode.insertBefore(g,s);
 	  })();
 	</script>
-	<noscript><p><img src=\"https://" . $matomo_url . "/matomo.php?idsite=" . $matomo_id . "&amp;rec=1\" style=\"border:0;\" alt=\"\" /></p></noscript>
-	<!-- End Matomo Code --></head></html>";
+	<noscript><p><img src="https://$matomo_url/matomo.php?idsite=$matomo_id&amp;rec=1" style="border:0" alt="" /></p></noscript>
+	<!-- End Matomo Code -->
+	</head></html>
+	EOD;
+
 	echo $content;
 	
     // Now die so the normal flow of event is interrupted
